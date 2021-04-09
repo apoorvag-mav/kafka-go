@@ -316,6 +316,10 @@ func (r *Reader) run(cg *ConsumerGroup) {
 
 		r.stats.rebalances.observe(1)
 
+		r.withLogger(func(l Logger) {
+			l.Printf("APOORV--- Assignment map: %+v\n", gen.Assignments)
+		})
+
 		r.subscribe(gen.Assignments)
 
 		gen.Start(func(ctx context.Context) {
@@ -603,6 +607,7 @@ func NewReader(config ReaderConfig) *Reader {
 	if err := config.Validate(); err != nil {
 		panic(err)
 	}
+	fmt.Printf("APOORV--- Lets create a new reader\n")
 
 	if config.GroupID != "" {
 		if len(config.GroupBalancers) == 0 {
