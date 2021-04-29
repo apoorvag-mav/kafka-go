@@ -82,6 +82,8 @@ type Reader struct {
 	// reader stats are all made of atomic values, no need for synchronization.
 	// Use a pointer to ensure 64-bit alignment of the values.
 	stats *readerStats
+
+	Assignments map[string][]PartitionAssignment
 }
 
 // useConsumerGroup indicates whether the Reader is part of a consumer group.
@@ -316,6 +318,9 @@ func (r *Reader) run(cg *ConsumerGroup) {
 
 		r.stats.rebalances.observe(1)
 
+		r.mutex.Lock()
+		r.Assignments = gen.Assignments
+		r.mutex.Unlock()
 		r.withLogger(func(l Logger) {
 			l.Printf("APOORV--- Assignment map: %+v\n", gen.Assignments)
 		})
@@ -607,7 +612,7 @@ func NewReader(config ReaderConfig) *Reader {
 	if err := config.Validate(); err != nil {
 		panic(err)
 	}
-	fmt.Printf("APOORV--- Lets create a new reader\n")
+	fmt.Printf("APOORV (30/4/21)--- Lets create a new reader\n")
 
 	if config.GroupID != "" {
 		if len(config.GroupBalancers) == 0 {
@@ -690,7 +695,8 @@ func NewReader(config ReaderConfig) *Reader {
 			// once when the reader is created.
 			partition: strconv.Itoa(readerStatsPartition),
 		},
-		version: version,
+		version:     version,
+		Assignments: nil,
 	}
 	if r.useConsumerGroup() {
 		r.done = make(chan struct{})
