@@ -284,6 +284,7 @@ func (r *Reader) run(cg *ConsumerGroup) {
 	r.withLogger(func(l Logger) {
 		l.Printf("entering loop for consumer group, %v\n", r.config.GroupID)
 	})
+	fmt.Printf("APOORV --- entering loop for consumer group, %v\n", r.config.GroupID)
 
 	for {
 		// Limit the number of attempts at waiting for the next
@@ -698,7 +699,10 @@ func NewReader(config ReaderConfig) *Reader {
 		version:     version,
 		Assignments: make(chan map[string][]PartitionAssignment),
 	}
+	fmt.Printf("APOORV --- in new reader\n")
+
 	if r.useConsumerGroup() {
+		fmt.Printf("APOORV --- in new reader in if for topic: %v\n", r.getTopics())
 		r.done = make(chan struct{})
 		r.runError = make(chan error)
 		cg, err := NewConsumerGroup(ConsumerGroupConfig{
@@ -721,6 +725,7 @@ func NewReader(config ReaderConfig) *Reader {
 		if err != nil {
 			panic(err)
 		}
+		fmt.Printf("APOORV --- in new reader before calling run\n")
 		go r.run(cg)
 	}
 
