@@ -324,7 +324,7 @@ func (r *Reader) run(cg *ConsumerGroup) {
 		r.withLogger(func(l Logger) {
 			l.Printf("APOORV--- Assignment map: %+v\n", gen.Assignments)
 		})
-
+		fmt.Printf("APOORV--- Assignment map: %+v\n", gen.Assignments)
 		r.subscribe(gen.Assignments)
 
 		gen.Start(func(ctx context.Context) {
