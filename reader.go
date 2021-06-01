@@ -319,9 +319,9 @@ func (r *Reader) run(cg *ConsumerGroup) {
 
 		r.stats.rebalances.observe(1)
 
-		r.mutex.Lock()
-		r.Assignments <- gen.Assignments
-		r.mutex.Unlock()
+		//r.mutex.Lock()
+		// r.Assignments <- gen.Assignments
+		//r.mutex.Unlock()
 		r.withLogger(func(l Logger) {
 			l.Printf("APOORV--- Assignment map: %+v\n", gen.Assignments)
 		})
